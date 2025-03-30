@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafetería - Inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            padding: 0.5rem 1rem;
+        }
+        .index-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .index-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .index-container p {
+            font-size: 0.9rem;
+        }
+        .header-logo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .footer-logo-container {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        /* Imagen promocional */
+        .promo-image {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* Sección de ofertas */
+        .offers-section {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 15px;
+        }
+        .offers-section h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .offer-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 100%; 
+            display: flex;
+            flex-direction: column;
+        }
+        .offer-card img {
+            height: 200px; 
+            object-fit: cover; 
+        }
+        .offer-card .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        footer a {
+            color: #0d6efd;
+            margin: 0 10px;
+            font-size: 1.5rem;
+        }
+        footer a:hover {
+            color: #ffffff;
+        }
+        @media (max-width: 768px) {
+            .header-logo {
+                display: none;
+            }
+            .footer-logo-container {
+                display: block;
+            }
+            .index-container {
+                margin: 20px;
+                padding: 15px;
+            }
+            .index-container .row .col {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            .promo-image {
+                margin: 10px auto;
+            }
+            .offers-section .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html">
+        <img src="logo.jpg" alt="Cafe Movile Logo" class="header-logo rounded-3">
+    </a>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Cafetería</a>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="products.html">Productos</a></li>
+                <li class="nav-item"><a class="nav-link">-</a></li>
+                <li class="nav-item"><a class="nav-link" href="login.html">Log in</a></li>
+                <li class="nav-item"><a class="nav-link" href="signup.html">Sign up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="index-container">
+        <h2>Bienvenidos a nuestra cafetería</h2>
+        <p>Inicia sesión o registrate para ver nuestros productos.</p>
+    </div>
+
+    <img src="coffe.jpeg" alt="Cafetería Móvil" class="promo-image">
+
+    <section class="offers-section">
+        <h3>Productos en Oferta</h3>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card offer-card">
+                    <img src="americano.jpeg" class="card-img-top" alt="Café Americano">
+                    <div class="card-body">
+                        <h5 class="card-title">Café Americano</h5>
+                        <p class="card-text">Un delicioso café americano, para tu mañana.</p>
+                        <p class="card-text"><strong>Precio: $2.500</strong> <span class="text-muted text-decoration-line-through">$3.000</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card offer-card">
+                    <img src="capuchino.jpg" class="card-img-top" alt="Capuccino">
+                    <div class="card-body">
+                        <h5 class="card-title">Capuccino</h5>
+                        <p class="card-text">Capuccino clásico con espuma cremosa y un toque de cacao.</p>
+                        <p class="card-text"><strong>Precio: $2.800</strong> <span class="text-muted text-decoration-line-through">$3.500</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card offer-card">
+                    <img src="macchiato.webp" class="card-img-top" alt="Macchiato">
+                    <div class="card-body">
+                        <h5 class="card-title">Macchiato</h5>
+                        <p class="card-text">Un espresso intenso con un toque de espuma de leche, perfecto para un impulso rápido.</p>
+                        <p class="card-text"><strong>Precio: $1.500</strong> <span class="text-muted text-decoration-line-through">$2.000</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="footer-logo-container">
+        <a href="index.html">
+            <img src="logo.jpg" alt="Cafe Movile Logo" class="rounded-3" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
+        </a>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p><strong>Contacto:</strong> +56 9 1234 5678 | contacto@cafemovile.cl</p>
+            <p><strong>Dirección:</strong> Av. Colón 1234, Talcahuano, Concepción, Chile</p>
+            <p>
+                <a href="https://instagram.com/cafemovile" target="_blank"><i class="bi bi-instagram"></i></a>
+                <a href="https://facebook.com/cafemovile" target="_blank"><i class="bi bi-facebook"></i></a>
+                <a href="https://twitter.com/cafemovile" target="_blank"><i class="bi bi-twitter"></i></a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
