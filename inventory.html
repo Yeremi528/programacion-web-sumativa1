@@ -5,36 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda Online - Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            border: none;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="index.html">Tienda Online</a>
-            <ul class="navbar-nav ms-auto">
-            </ul>
         </div>
     </nav>
-    <div class="container mt-4">
-        <h2>Registro de Productos</h2>
-        <form id="productForm" onsubmit="addProduct(event)">
-            <div class="mb-3">
-                <label for="productName" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="productName" required>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card p-4 shadow-sm">
+                    <h2 class="text-center">Registro de Productos</h2>
+                    <form id="productForm" onsubmit="addProduct(event)">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="productPrice" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productStock" class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="productStock" min="0" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Agregar Producto</button>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="productPrice" class="form-label">Precio</label>
-                <input type="number" class="form-control" id="productPrice" min="0" required>
+            <div class="col-md-6">
+                <h3 class="text-center">Productos Disponibles</h3>
+                <ul id="productsList" class="list-group shadow-sm"></ul>
             </div>
-            <div class="mb-3">
-                <label for="productStock" class="form-label">Stock</label>
-                <input type="number" class="form-control" id="productStock" min="0" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Agregar Producto</button>
-        </form>
-        <h3 class="mt-4">Productos Disponibles</h3>
-        <ul id="productsList" class="list-group"></ul>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let products = JSON.parse(localStorage.getItem('products')) || [];
 
@@ -49,8 +65,13 @@
                 return;
             }
 
-            const product = { id: Date.now(), name, price, stock };
-            products.push(product);
+            const existingProduct = products.find(p => p.name.toLowerCase() === name.toLowerCase());
+            if (existingProduct) {
+                existingProduct.stock += stock;
+            } else {
+                products.push({ id: Date.now(), name, price, stock });
+            }
+            
             localStorage.setItem('products', JSON.stringify(products));
             updateProductList();
             document.getElementById('productForm').reset();
@@ -61,29 +82,14 @@
             list.innerHTML = '';
             products.forEach(product => {
                 const item = document.createElement('li');
-                item.className = 'list-group-item d-flex justify-content-between align-items-center';
-                item.innerHTML = `${product.name} - $${product.price} (Stock: ${product.stock})
-                    <button class="btn btn-sm btn-primary" onclick="addToCart(${product.id})">Agregar al Carrito</button>`;
+                item.className = 'list-group-item';
+                item.innerHTML = `${product.name} - <strong>$${product.price.toFixed(2)}</strong> (Stock: ${product.stock})`;
                 list.appendChild(item);
             });
         }
 
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product && product.stock > 0) {
-                let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                cart.push({ ...product });
-                product.stock--;
-                localStorage.setItem('cart', JSON.stringify(cart));
-                localStorage.setItem('products', JSON.stringify(products));
-                updateProductList();
-                alert(`${product.name} agregado al carrito.`);
-            } else {
-                alert('Producto sin stock.');
-            }
-        }
-
         updateProductList();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
