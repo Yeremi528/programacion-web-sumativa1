@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #CDCDCD !important; /* Gris RGB(205,205,205) */
+            background-color: #f8f9fa;
         }
         .navbar {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -21,8 +21,6 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="index.html">Tienda Online</a>
-            <ul class="navbar-nav ms-auto">
-            </ul>
         </div>
     </nav>
     <div class="container mt-5">
@@ -88,21 +86,6 @@
                 item.innerHTML = `${product.name} - <strong>$${product.price.toFixed(2)}</strong> (Stock: ${product.stock})`;
                 list.appendChild(item);
             });
-        }
-
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (product && product.stock > 0) {
-                let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                cart.push({ ...product });
-                product.stock--;
-                localStorage.setItem('cart', JSON.stringify(cart));
-                localStorage.setItem('products', JSON.stringify(products));
-                updateProductList();
-                alert(`${product.name} agregado al carrito.`);
-            } else {
-                alert('Producto sin stock.');
-            }
         }
 
         updateProductList();
