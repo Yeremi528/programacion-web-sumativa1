@@ -1,0 +1,22 @@
+body {
+    background-color: #dcdcdc;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.edit-profile-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(211, 210, 210, 0.9);
+}
+footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: auto;
+}
