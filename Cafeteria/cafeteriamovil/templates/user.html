@@ -20,11 +20,9 @@
 
     <div class="profile-container">
         <img src="{% static 'img/Foto perfil.jpg' %}" alt="Foto de Perfil" class="profile-pic">
-        <h2>Tu Nombre</h2>
-        <p><strong>Email:</strong> correo.ejemplo@direccion.com</p>
-        <p><strong>Teléfono:</strong> +56 9 1111 1111</p>
-        <p><strong>Domicilio:</strong> Calle de Ejemplo 1313, Santiago, Chile</p>
-        <a href= " {% url 'editaruser' %} " class="btn btn-primary edit-profile-btn">Modificar Perfil</a>
+        <h2>{{ usuario.name }} {{ usuario.lastname }}</h2>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+        <a href="{% url 'editaruser' %}" class="btn btn-primary edit-profile-btn">Modificar Perfil</a>
         <a href="{% url 'productos' %}" class="btn btn-secondary products-btn">Ver Productos</a>
     </div>
 

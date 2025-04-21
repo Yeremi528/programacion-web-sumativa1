@@ -22,7 +22,8 @@
 
     <div class="login-container container mt-4">
         <h2>Inicio de sesión</h2>
-        <form id="form">
+        <form  action="{% url 'login' %}" method="post">
+            {% csrf_token %}
             <div class="mb-3">
                 <label for="email" class="form-label">Correo electrónico</label>
                 <input type="text" class="form-control" id="email">

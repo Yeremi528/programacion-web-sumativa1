@@ -74,12 +74,20 @@ WSGI_APPLICATION = 'Cafeteria.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'default':{
+        'ENGINE':'django.db.backends.oracle',
+        'NAME':'(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-santiago-1.oraclecloud.com))(connect_data=(service_name=gcffc0e87e42ffe_kew7b8b0lrbhr6i3_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))',
+        'USER': 'ADMIN',
+        'PASSWORD':'Holaratonconcola1.',
+        'OPTIONS':{
+            'wallet_location': os.path.join(BASE_DIR, 'wallet')
+        }
     }
 }
+
 
 
 # Password validation

@@ -22,32 +22,33 @@
 
     <div class="signup-container container mt-4">
         <h2>Registrar cuenta</h2>
-        <form id="form">
+        <form action="{% url 'signup' %}" method="post">
+            {% csrf_token %}
             <div class="row g-3 mb-3">
                 <div class="col">
                     <label for="name" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="name">
+                    <input type="text" name="name" class="form-control" id="name">
                     <div id="nameError" class="text-danger small"></div>
                 </div>
                 <div class="col">
                     <label for="apellido" class="form-label">Apellido</label>
-                    <input type="text" class="form-control" id="apellido">
+                    <input type="text" name="lastname" class="form-control" id="lastname">
                     <div id="apellidoError" class="text-danger small"></div>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Correo electrónico</label>
-                <input type="text" class="form-control" id="email">
+                <input type="text" name="email" class="form-control" id="email">
                 <div id="emailError" class="text-danger small"></div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password">
+                <input type="password" name="password" class="form-control" id="password">
                 <div id="passwordError" class="text-danger small"></div>
             </div>
             <div class="mb-3">
                 <label for="accountType" class="form-label">Tipo de cuenta</label>
-                <select class="form-select" id="accountType">
+                <select class="form-select" name="accountType" id="accountType">
                     <option value="" disabled selected>Tipo de cuenta</option>
                     <option value="Administrador">Administrador</option>
                     <option value="Cliente">Cliente</option>
@@ -71,7 +72,6 @@
 
     <script>
         const urlAdministrador = "{% url 'administrador' %}";
-        const urlusuario = "{% url 'usuario' %}";
     </script>
 
     <script src="{% static 'js/signup.js' %}"></script>
