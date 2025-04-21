@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import User
+from .models import User,Account_Detail
 
 from django.core.exceptions import ValidationError
 from django.db import DataError
 from django.db import IntegrityError
 
-from django.urls import reverse
+from django.contrib.auth.hashers import check_password
 
 
 
@@ -18,14 +18,31 @@ def inicio(request):
     return render(request, 'index.html')
 
 def login(request):
-    print("[LOGIN] got request method:", request.method)
     if request.method == 'POST':
-        email = request.POST.get('email')
-        pwd   = request.POST.get('password')
-        print(f"[LOGIN] Usuario: {email} — Contraseña: {pwd}")
-
         
-    return render(request, 'login.html')
+        email = request.POST.get('email')
+        pwd = request.POST.get('password')
+
+        print(email)
+        print(pwd)
+
+      
+        try:
+            usuario = User.objects.get(email=email)
+            print(usuario.password)
+        except User.DoesNotExist:
+            return HttpResponse("Usuario no encontrado")
+
+        if usuario.password != pwd:
+            return HttpResponse("Contraseña incorrecta")
+
+        if usuario.account_type == admin:
+            return redirect("editaradmin")
+        else:
+            return redirect("usuario", usuario.id)
+
+    return render(request, "login.html")
+
 
 def signup(request):
     if request.method == "POST":
@@ -36,6 +53,9 @@ def signup(request):
         password = request.POST.get("password")
         account_type = request.POST.get("accountType")
 
+        account_type_instance, created = Account_Detail.objects.get_or_create(account_type=account_type)
+
+        print(created)
 
         try:
             usuario = User.objects.create(
@@ -43,7 +63,8 @@ def signup(request):
                 lastname = lastname,
                 email = email,
                 password = password,
-                account_type = account_type
+                account_type=account_type_instance
+                 
             )
 
             if account_type == admin:

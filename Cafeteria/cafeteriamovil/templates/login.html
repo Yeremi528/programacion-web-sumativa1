@@ -26,23 +26,15 @@
             {% csrf_token %}
             <div class="mb-3">
                 <label for="email" class="form-label">Correo electrónico</label>
-                <input type="text" class="form-control" id="email">
+                <input type="text" class="form-control" name="email" id="email">
                 <div id="emailError" class="text-danger small"></div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password">
+                <input type="password" class="form-control" name="password" id="password">
                 <div id="passwordError" class="text-danger small"></div>
             </div>
-            <div class="mb-3">
-                <label for="accountType" class="form-label">Tipo de cuenta</label>
-                <select class="form-select" id="accountType">
-                    <option value="" disabled selected>Tipo de cuenta</option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="Cliente">Cliente</option>
-                </select>
-                <div id="accountTypeError" class="text-danger small"></div>
-            </div>
+        
             <div class="row g-3 mb-2 align-items-center">
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">Iniciar sesión</button>
@@ -60,7 +52,6 @@
 
     <script>
         const urlAdministrador = "{% url 'administrador' %}";
-        const urlusuario = "{% url 'usuario' %}";
     </script>
 
     <script src="{% static 'js/login.js' %}"></script>
