@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Usuario
+from .models import User
 
 from django.core.exceptions import ValidationError
 from django.db import DataError
@@ -38,7 +38,7 @@ def signup(request):
 
 
         try:
-            usuario = Usuario.objects.create(
+            usuario = User.objects.create(
                 name = name,
                 lastname = lastname,
                 email = email,
@@ -66,13 +66,13 @@ def signup(request):
 
 def usuario(request, usuario_id):
     try:
-        usuario = Usuario.objects.get(id=usuario_id)
+        usuario = User.objects.get(id=usuario_id)
 
         return render(request, 'user.html', {"usuario": usuario})
 
-    except Usuario.DoesNotExist:
+    except User.DoesNotExist:
         return HttpResponse("No se encontró un usuario con ese correo.")
-    except Usuario.MultipleObjectsReturned:
+    except User.MultipleObjectsReturned:
         return HttpResponse("Error: hay múltiples usuarios con ese correo.")
     
 
