@@ -51,3 +51,13 @@ body {
         margin: 20px auto; 
     }
 }
+.custom-link {
+    color: black;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.custom-link:hover {
+    text-decoration: underline;
+    color: #555;
+}

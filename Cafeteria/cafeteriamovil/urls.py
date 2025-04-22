@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import inicio, login, signup, usuario, administrador, carrito, inventario, productos, editaradmin, editaruser
+from .views import inicio, login, signup, usuario, administrador, carrito, inventario, productos, editaradmin, editaruser, password_reset
 urlpatterns = [
     path('inicio', inicio, name="inicio"),
     path('inicio/login/', login, name="login"),
@@ -10,5 +10,7 @@ urlpatterns = [
     path('productos/carrito', carrito, name="carrito"),
     path('administrador/inventario', inventario, name="inventario"),
     path('administrador/editar', editaradmin, name="editaradmin"),
-    path('usuario/editar', editaruser, name="editaruser")
+    path('usuario/editar', editaruser, name="editaruser"),
+    path('password-reset/', password_reset, name='password_reset'),
+
 ]

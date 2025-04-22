@@ -13,13 +13,39 @@ from django.contrib.auth.hashers import check_password
 admin = "Administrador"
 usuario = "usuario"
 
-# Create your views here.
+def password_reset(request):
+    if request.method == "POST":
+        error = None
+
+        email = request.POST.get('email')
+        pwd = request.POST.get('password') 
+
+        print(email)
+        print(pwd)
+
+        try:
+            usuario = User.objects.get(email=email)
+            usuario.password = pwd
+            usuario.save()
+
+        except User.DoesNotExist:
+            error = "Usuario no encontrado"
+            return render(request, "password_reset.html", {"error": error})
+
+        if usuario.account_type == admin:
+            return redirect("editaradmin")
+        else:
+            return redirect("usuario", usuario.id)
+
+    return render(request, 'password_reset.html')
+
 def inicio(request):
     return render(request, 'index.html')
 
 def login(request):
     if request.method == 'POST':
-        
+        error = None
+
         email = request.POST.get('email')
         pwd = request.POST.get('password')
 
@@ -29,12 +55,13 @@ def login(request):
       
         try:
             usuario = User.objects.get(email=email)
-            print(usuario.password)
         except User.DoesNotExist:
-            return HttpResponse("Usuario no encontrado")
+            error = "Usuario no encontrado"
+            return render(request, "login.html", {"error": error})
 
         if usuario.password != pwd:
-            return HttpResponse("Contraseña incorrecta")
+            error = "Contraseña incorrecta"
+            return render(request, "login.html", {"error": error})
 
         if usuario.account_type == admin:
             return redirect("editaradmin")
