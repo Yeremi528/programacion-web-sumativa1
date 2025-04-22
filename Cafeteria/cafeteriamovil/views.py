@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import check_password
 
 
 
-admin = "Administrador"
+admin = "admin"
 usuario = "usuario"
 
 def password_reset(request):
@@ -19,9 +19,6 @@ def password_reset(request):
 
         email = request.POST.get('email')
         pwd = request.POST.get('password') 
-
-        print(email)
-        print(pwd)
 
         try:
             usuario = User.objects.get(email=email)
@@ -49,9 +46,6 @@ def login(request):
         email = request.POST.get('email')
         pwd = request.POST.get('password')
 
-        print(email)
-        print(pwd)
-
       
         try:
             usuario = User.objects.get(email=email)
@@ -73,33 +67,34 @@ def login(request):
 
 def signup(request):
     if request.method == "POST":
-
         name = request.POST.get("name")
         lastname = request.POST.get("lastname")
         email = request.POST.get("email")
         password = request.POST.get("password")
         account_type = request.POST.get("accountType")
 
+        print(account_type)
         account_type_instance, created = Account_Detail.objects.get_or_create(account_type=account_type)
-
-        print(created)
+        print(account_type_instance)
 
         try:
+            if User.objects.filter(email=email).exists():
+                error = "Usuario ya existente"
+                return render(request, "signup.html", {"error": error})
+            
             usuario = User.objects.create(
-                name = name,
-                lastname = lastname,
-                email = email,
-                password = password,
+                name=name,
+                lastname=lastname,
+                email=email,
+                password=password, 
                 account_type=account_type_instance
-                 
             )
 
             if account_type == admin:
                 return redirect("editaradmin")
             else:
                 return redirect("usuario", usuario.id)
-            
-        
+
         except IntegrityError:
             return HttpResponse("Error: El correo ya existe o hay campos obligatorios vacíos.")
         except DataError:
@@ -109,9 +104,7 @@ def signup(request):
         except Exception as e:
             return HttpResponse(f"Ocurrió un error inesperado: {e}")
 
-
     return render(request, 'signup.html')
-
 def usuario(request, usuario_id):
     try:
         usuario = User.objects.get(id=usuario_id)
