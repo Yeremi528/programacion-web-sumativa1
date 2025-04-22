@@ -10,20 +10,37 @@
    <link rel="stylesheet" href="{% static 'css/profile_style.css' %}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}">Cerrar Sesión</a></li>
-            </ul>
-        </div>
-    </nav>
+   {% if usuario.account_type == "admin" %}
+    <!-- Navbar para administradores -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inventario' %}">Inventario</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </nav>
+    {% else %}
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="">Mi Perfil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}">Cerrar Sesión</a></li>
+                    </ul>
+                </div>
+            </nav>
+    {% endif %}
 
     <div class="profile-container">
         <img src="{% static 'img/Foto perfil.jpg' %}" alt="Foto de Perfil" class="profile-pic">
         <h2>{{ usuario.name }} {{ usuario.lastname }}</h2>
         <p><strong>Email:</strong> {{ usuario.email }}</p>
-        <a href="{% url 'editaruser' %}" class="btn btn-primary edit-profile-btn">Modificar Perfil</a>
-        <a href="{% url 'productos' %}" class="btn btn-secondary products-btn">Ver Productos</a>
+        <a href="{% url 'editaruser' usuario_id=usuario.ID %}" class="btn btn-primary edit-profile-btn">Modificar Perfil</a>
+
+        {% if usuario.account_type != "admin" %}
+            <a href="{% url 'productos' %}" class="btn btn-secondary products-btn">Ver Productos</a>
+        {% endif %}
+
     </div>
 
     <footer>

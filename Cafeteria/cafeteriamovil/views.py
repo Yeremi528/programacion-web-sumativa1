@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import User,Account_Detail,Product
+from .models import User,Account_Detail, Product
 
 from django.core.exceptions import ValidationError
 from django.db import DataError
@@ -29,10 +29,8 @@ def password_reset(request):
             error = "Usuario no encontrado"
             return render(request, "password_reset.html", {"error": error})
 
-        if usuario.account_type == admin:
-            return redirect("editaradmin")
-        else:
-            return redirect("usuario", usuario.id)
+         
+        return redirect("usuario", usuario.id)
 
     return render(request, 'password_reset.html')
 
@@ -57,10 +55,8 @@ def login(request):
             error = "Contraseña incorrecta"
             return render(request, "login.html", {"error": error})
 
-        if usuario.account_type == admin:
-            return redirect("editaradmin")
-        else:
-            return redirect("usuario", usuario.id)
+      
+        return redirect("usuario", usuario.id)
 
     return render(request, "login.html")
 
@@ -90,10 +86,8 @@ def signup(request):
                 account_type=account_type_instance
             )
 
-            if account_type == admin:
-                return redirect("editaradmin")
-            else:
-                return redirect("usuario", usuario.id)
+
+            return redirect("usuario", usuario.id)
 
         except IntegrityError:
             return HttpResponse("Error: El correo ya existe o hay campos obligatorios vacíos.")
@@ -108,7 +102,6 @@ def signup(request):
 def usuario(request, usuario_id):
     try:
         usuario = User.objects.get(id=usuario_id)
-
         return render(request, 'user.html', {"usuario": usuario})
 
     except User.DoesNotExist:
@@ -118,8 +111,6 @@ def usuario(request, usuario_id):
     
 
 
-def administrador(request):
-    return render(request, 'adminuser.html')
 
 def productos(request):
     productos = Product.objects.all()
@@ -131,8 +122,13 @@ def carrito(request):
 def inventario(request):
     return render(request,'inventory.html')
 
-def editaradmin(request):
-    return render(request,'editprofileadmin.html')
 
-def editaruser(request):
-    return render(request, 'editprofileuser.html')
+def editaruser(request,usuario_id):
+    try:
+        usuario = User.objects.get(id=usuario_id)
+        return render(request, 'editprofileuser.html', {"usuario":usuario})
+    except User.DoesNotExist:
+        return HttpResponse("No se encontró un usuario con ese correo.")
+    except User.MultipleObjectsReturned:
+        return HttpResponse("Error: hay múltiples usuarios con ese correo.")
+    
