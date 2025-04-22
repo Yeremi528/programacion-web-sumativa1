@@ -11,3 +11,6 @@ Información de la DB
 Display name: KEW7B8B0LRBHR6I3
 USERNAME: ADMIN
 Password: Holaratonconcola1.
+
+INFORMACION ADICIONAL
+si el terminal pide la PEM pass introducir: Holaratonconcola1.
