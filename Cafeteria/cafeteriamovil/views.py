@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import User,Account_Detail
+from .models import User,Account_Detail,Product
 
 from django.core.exceptions import ValidationError
 from django.db import DataError
@@ -129,7 +129,8 @@ def administrador(request):
     return render(request, 'adminuser.html')
 
 def productos(request):
-    return render(request, 'products.html')
+    productos = Product.objects.all()
+    return render(request, 'products.html', {'productos': productos})
 
 def carrito(request):
     return render(request, 'cart.html')

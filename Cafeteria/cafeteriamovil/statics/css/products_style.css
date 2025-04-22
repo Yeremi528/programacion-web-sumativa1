@@ -44,7 +44,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .product-card img {
-    height: 200px;
+    height: 300px;
     object-fit: cover;
 }
 /* Footer */

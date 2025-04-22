@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -28,138 +29,21 @@
     <section class="products-section">
         <h3>Productos Disponibles</h3>
         <div class="row g-4" id="productsList">
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/expreso.jpeg' %}" class="card-img-top" alt="Espresso Pequeño">
-                    <div class="card-body">
-                        <h5 class="card-title">Espresso Pequeño</h5>
-                        <p class="card-text">$1.500 (Stock: 20)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
+            {% for producto in productos %}
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card product-card">
+                            <img src="{% static 'img/default.jpg' %}" class="card-img-top" alt="Imagen por defecto">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ producto.product_name }}</h5>
+                            <p class="card-text">${{ producto.product_price }} (Stock: {{ producto.stock_product }})</p>
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-primary">Añadir al carrito</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/expreso.jpeg' %}" class="card-img-top" alt="Espresso Mediano">
-                    <div class="card-body">
-                        <h5 class="card-title">Espresso Mediano</h5>
-                        <p class="card-text">$2.000 (Stock: 15)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/expreso.jpeg' %}" class="card-img-top" alt="Espresso Grande">
-                    <div class="card-body">
-                        <h5 class="card-title">Espresso Grande</h5>
-                        <p class="card-text">$2.500 (Stock: 10)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/capuchino.jpg' %}" class="card-img-top" alt="Cappuccino Pequeño">
-                    <div class="card-body">
-                        <h5 class="card-title">Cappuccino Pequeño</h5>
-                        <p class="card-text">$2.000 (Stock: 18)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/capuchino.jpg' %}" class="card-img-top" alt="capuchino Mediano">
-                    <div class="card-body">
-                        <h5 class="card-title">Capuchino Mediano</h5>
-                        <p class="card-text">$2.800 (Stock: 20)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/capuchino.jpg' %}" class="card-img-top" alt="Cappuccino Grande">
-                    <div class="card-body">
-                        <h5 class="card-title">Cappuccino Grande</h5>
-                        <p class="card-text">$3.000 (Stock: 8)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/macchiato.webp' %}" class="card-img-top" alt="Macchiato Pequeño">
-                    <div class="card-body">
-                        <h5 class="card-title">Macchiato Pequeño</h5>
-                        <p class="card-text">$1.500 (Stock: 25)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/macchiato.webp' %}" class="card-img-top" alt="Macchiato Mediano">
-                    <div class="card-body">
-                        <h5 class="card-title">Macchiato Mediano</h5>
-                        <p class="card-text">$2.000 (Stock: 13)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/macchiato.webp' %}" class="card-img-top" alt="Macchiato Grande">
-                    <div class="card-body">
-                        <h5 class="card-title">Macchiato Grande</h5>
-                        <p class="card-text">$2.500 (Stock: 15)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/americano.jpeg' %}" class="card-img-top" alt="Americano Pequeño">
-                    <div class="card-body">
-                        <h5 class="card-title">Café Americano Pequeño</h5>
-                        <p class="card-text">$2.500 (Stock: 15)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card">
-                    <img src="{% static 'img/americano.jpeg' %}" class="card-img-top" alt="Americano Mediano">
-                    <div class="card-body">
-                        <h5 class="card-title">Café Americano Mediano</h5>
-                        <p class="card-text">$3.000 (Stock: 20)</p>
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary">Añadir al carrito</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
+        </div>
     </section>
 
     <!-- Logo en el footer (pantallas pequeñas) -->
