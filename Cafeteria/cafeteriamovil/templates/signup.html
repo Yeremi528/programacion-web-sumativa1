@@ -38,23 +38,26 @@
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Correo electrónico</label>
-                <input type="text" name="email" class="form-control" id="email">
+                <input type="text" name="email" class="form-control" id="email" required>
                 <div id="emailError" class="text-danger small"></div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" name="password" class="form-control" id="password">
+                <input type="password" name="password" class="form-control" id="password" required>
                 <div id="passwordError" class="text-danger small"></div>
             </div>
             <div class="mb-3">
                 <label for="accountType" class="form-label">Tipo de cuenta</label>
                 <select class="form-select" name="accountType" id="accountType">
                     <option value="" disabled selected>Tipo de cuenta</option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="Cliente">Cliente</option>
+                    <option value="admin">Administrador</option>
+                    <option value="usuario">Cliente</option>
                 </select>
                 <div id="accountTypeError" class="text-danger small"></div>
             </div>
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
             <div class="row g-3 mb-2 align-items-center">
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">Registrar</button>
