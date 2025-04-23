@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import inicio, login, signup, usuario, carrito, inventario, productos, editaruser, password_reset
 urlpatterns = [
+    path('', inicio, name="inicio"),
     path('inicio', inicio, name="inicio"),
     path('inicio/login/', login, name="login"),
     path('inicio/signup', signup, name="signup"),
