@@ -8,7 +8,11 @@ from django.db import IntegrityError
 
 from django.contrib.auth.hashers import check_password
 
-
+from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import ProductSerializer
 
 admin = "admin"
 usuario = "usuario"
@@ -131,4 +135,54 @@ def editaruser(request,usuario_id):
         return HttpResponse("No se encontró un usuario con ese correo.")
     except User.MultipleObjectsReturned:
         return HttpResponse("Error: hay múltiples usuarios con ese correo.")
-    
+
+
+# ViewSet crea automaticamente endpoints para listar, crear, editar y eliminar productos
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all().order_by('-created_at')  # Trae los productos ordenados por fecha de creacion
+    serializer_class = ProductSerializer  # Usamos el serializer que creamos en serializers.py
+
+# Listar y crear productos
+class ListCreateProduct(APIView):
+    def get(self, request):
+        productos = Product.objects.all()
+        serializer = ProductSerializer(productos, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Ver, editar y eliminar un producto
+class RetrieveUpdateDestroyProduct(APIView):
+    def get(self, request, id):
+        try:
+            producto = Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ProductSerializer(producto)
+        return Response(serializer.data)
+
+    def put(self, request, id):
+        try:
+            producto = Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProductSerializer(producto, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        try:
+            producto = Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        producto.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

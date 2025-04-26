@@ -4,7 +4,7 @@ Para actualizar modelo:
 2.- python manage.py migrate
 
 Ejecutar aplicación:
-1.- python manage.py runserver 
+1.- python manage.py runserver
 2.- Holaratonconcola1.
 
 Información de la DB
@@ -14,3 +14,6 @@ Password: Holaratonconcola1.
 
 INFORMACION ADICIONAL
 si el terminal pide la PEM pass introducir: Holaratonconcola1.
+
+Comando para instalar rest_framework
+pip install djangorestframework

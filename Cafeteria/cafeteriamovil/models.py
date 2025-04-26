@@ -47,14 +47,14 @@ class Product(models.Model):
     product_name = models.CharField("Nombre", max_length=255)
     product_desc = models.TextField("Descripción")
     product_price = models.PositiveIntegerField("Precio")
-    product_type = models.ForeignKey(Product_Detail, on_delete=models.CASCADE, related_name="tipo_producto", default=1)
-    imagen_product = models.BinaryField("Imagen", blank=True, null=True)
     stock_product = models.PositiveIntegerField("Stock")
-    promotion = models.ForeignKey(Promotions, on_delete=models.CASCADE, related_name="promocion")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    # promotion = models.ForeignKey(Promotions, on_delete=models.CASCADE, related_name="promocion")
+    # imagen_product = models.BinaryField("Imagen", blank=True, null=True)
+    # product_type = models.ForeignKey(Product_Detail, on_delete=models.CASCADE, related_name="tipo_producto", default=1)
 
-    def __str__(self):
+    def str(self):
         return self.product_name
 
 
