@@ -84,7 +84,8 @@ DATABASES = {
         'USER': 'ADMIN',
         'PASSWORD':'Holaratonconcola1.',
         'OPTIONS':{
-            'wallet_location': os.path.join(BASE_DIR, 'wallet')
+            'wallet_location': os.path.join(BASE_DIR, 'wallet'),
+            'wallet_password': 'Holaratonconcola1.'
         }
     }
 }
