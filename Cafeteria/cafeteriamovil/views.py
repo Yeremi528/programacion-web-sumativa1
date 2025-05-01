@@ -278,6 +278,8 @@ def inventario(request):
 def editaruser(request):
     return render(request, 'editprofileuser.html')
 
+def recetas(request):
+    return render(request, 'recetas.html')
 
 # ViewSet crea automaticamente endpoints para listar, crear, editar y eliminar productos
 class ProductViewSet(viewsets.ModelViewSet):
