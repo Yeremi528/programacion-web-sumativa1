@@ -2,57 +2,126 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Perfil</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static '/css/edit_profile_style.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Perfil</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/edit_profile_style.css' %}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{%url 'inicio'%}">Inicio</a>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{%url 'usuario' usuario_id=usuario.ID%}">Volver a Perfil</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <div class="edit-profile-container">
-        <h2 class="text-center">Editar Perfil</h2>
-        <form>
-            <div class="mb-3">
-                <label for="name" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="name" value="">
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" value="">
-            </div>
-            <div class="mb-3">
-                <label for="phone" class="form-label">Teléfono</label>
-                <input type="tel" class="form-control" id="phone" value="">
-            </div>
-            <div class="mb-3">
-                <label for="location" class="form-label">Ubicación</label>
-                <input type="text" class="form-control" id="location" value="">
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
-        </form>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'inicio' %}">Inicio</a>
+      <ul class="navbar-nav ms-auto" id="navbar-links">
+      </ul>
     </div>
+  </nav>
 
-    <footer>
-        <div class="container">
-            <p><strong>Contacto:</strong> +56 9 1234 5678 | contacto@cafemovile.cl</p>
-            <p><strong>Dirección:</strong> Av. Colón 1234, Talcahuano, Concepción, Chile</p>
-            <p>
-                <a href="https://instagram.com/cafemovile" target="_blank"><i class="bi bi-instagram"></i></a>
-                <a href="https://facebook.com/cafemovile" target="_blank"><i class="bi bi-facebook"></i></a>
-                <a href="https://twitter.com/cafemovile" target="_blank"><i class="bi bi-twitter"></i></a>
-            </p>
-        </div>
-    </footer>
+  <div class="edit-profile-container container mt-4">
+    <h2 class="text-center mb-4">Editar Perfil</h2>
+    <form id="editForm" method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="name" class="form-label">Nombre</label>
+        <input
+          type="text"
+          class="form-control"
+          name="name"
+          id="name"
+          value="">
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          name="email"
+          id="email"
+          value="">
+      </div>
+    
 
-  
+      <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+    </form>
+  </div>
+
+  <footer class="mt-5">
+    <div class="container text-center">
+      <p><strong>Contacto:</strong> +56 9 1234 5678 | contacto@cafemovile.cl</p>
+      <p><strong>Dirección:</strong> Av. Colón 1234, Talcahuano, Concepción, Chile</p>
+      <p>
+        <a href="https://instagram.com/cafemovile" target="_blank"><i class="bi bi-instagram"></i></a>
+        <a href="https://facebook.com/cafemovile" target="_blank"><i class="bi bi-facebook"></i></a>
+        <a href="https://twitter.com/cafemovile" target="_blank"><i class="bi bi-twitter"></i></a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    fetch("/api/usuario/", {
+      method: "GET",
+      headers: { "Authorization": token }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      document.getElementById("name").value     = data.name;
+      document.getElementById("email").value    = data.email;
+      document.getElementById("phone").value    = data.phone || "";
+
+      const nav = document.getElementById("navbar-links");
+      if (data.account_type === "admin") {
+        nav.innerHTML = `
+          <li class="nav-item"><a class="nav-link" href="/inventario/">Inventario</a></li>
+          <li class="nav-item"><a class="nav-link" href="/inicio/">Cerrar Sesión</a></li>`;
+      } else {
+        nav.innerHTML = `
+          <li class="nav-item"><a class="nav-link" href="usuario/">Mi Perfil</a></li>
+          <li class="nav-item"><a class="nav-link" href="/inicio/">Cerrar Sesión</a></li>`;
+      }
+    })
+    .catch(err => console.error("Error al cargar datos:", err));
+
+    document.getElementById("editForm")
+      .addEventListener("submit", function(e) {
+        e.preventDefault();
+        const payload = {
+          name:     document.getElementById("name").value,
+          email:    document.getElementById("email").value,
+        };
+
+        fetch("/api/usuario/", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("Error al guardar cambios");
+          return res.json();
+        })
+        .then(resp => {
+          alert("Perfil actualizado con éxito");
+          window.location.href = "/usuario/";
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Hubo un error al actualizar el perfil");
+        });
+      });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

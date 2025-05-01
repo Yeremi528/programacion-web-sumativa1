@@ -9,7 +9,6 @@ class Account_Detail(models.Model):
 
 # Usuario
 class User(models.Model):
-    ID = models.CharField("ID", max_length=255)
     name = models.CharField("Nombre", max_length=255)
     lastname = models.CharField("Apellido", max_length=255)
     email = models.EmailField("Correo Electrónico", unique=True)

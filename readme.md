@@ -15,5 +15,17 @@ Password: Holaratonconcola1.
 INFORMACION ADICIONAL
 si el terminal pide la PEM pass introducir: Holaratonconcola1.
 
+
+DEPENDENCIAS
+
 Comando para instalar rest_framework
 pip install djangorestframework
+brew install pipx
+pipx install PyJWT
+
+
+
+Levantar ambiente python
+
+1.- python3 -m venv venv
+2.- source venv/bin/activate

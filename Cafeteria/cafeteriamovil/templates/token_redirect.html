@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Redirigiendo...</title>
+</head>
+<body>
+  <script>
+    localStorage.setItem("token", "{{ token|safe }}");
+
+    window.location.href = "/usuario";
+  </script>
+</body>
+</html>

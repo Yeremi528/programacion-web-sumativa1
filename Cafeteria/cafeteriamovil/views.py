@@ -2,6 +2,12 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import User,Account_Detail, Product
 
+import jwt
+import os
+
+from django.http import JsonResponse
+
+
 from django.core.exceptions import ValidationError
 from django.db import DataError
 from django.db import IntegrityError
@@ -17,6 +23,19 @@ from .serializers import ProductSerializer
 admin = "admin"
 usuario = "usuario"
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+private_key_path = os.path.join(BASE_DIR,  'keys', 'private_key.pem')
+with open(private_key_path, 'r') as file:
+    private_key = file.read()
+
+
+public_key_path = os.path.join(BASE_DIR, 'keys', 'public_key.pem')
+with open(public_key_path, 'r') as file:
+    public_key = file.read()
+
+
+    
 def password_reset(request):
     if request.method == "POST":
         error = None
@@ -82,16 +101,22 @@ def signup(request):
                 error = "Usuario ya existente"
                 return render(request, "signup.html", {"error": error})
             
-            usuario = User.objects.create(
+            usuario = User(
                 name=name,
                 lastname=lastname,
                 email=email,
                 password=password, 
                 account_type=account_type_instance
             )
+            usuario.save()
 
+            payload = {
+                "ID": usuario.id,
+            }
 
-            return redirect("usuario", usuario.id)
+            token = jwt.encode(payload, private_key, algorithm='RS256')
+
+            return render(request, "token_redirect.html", {"token": token})
 
         except IntegrityError:
             return HttpResponse("Error: El correo ya existe o hay campos obligatorios vacíos.")
@@ -103,17 +128,77 @@ def signup(request):
             return HttpResponse(f"Ocurrió un error inesperado: {e}")
 
     return render(request, 'signup.html')
-def usuario(request, usuario_id):
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponseNotAllowed
+import json, jwt
+
+# Asegúrate de tener public_key cargada desde tu PEM
+with open('/Users/yeremias/Desktop/programacion-web-sumativa1/Cafeteria/keys/public_key.pem') as f:
+    public_key = f.read()
+
+@csrf_exempt
+def usuario_api(request):
+    # Leer el token de cabecera
+    token = request.headers.get('Authorization', '')
+    if not token:
+        return JsonResponse({"error": "Token no enviado"}, status=401)
+
+    # Decodificar JWT antes de cualquier operación
     try:
-        usuario = User.objects.get(id=usuario_id)
-        return render(request, 'user.html', {"usuario": usuario})
+        decoded = jwt.decode(token, public_key, algorithms=["RS256"])
+        usuario_id = decoded.get("ID")
+    except Exception as e:
+        return JsonResponse({"error": f"Token inválido: {str(e)}"}, status=400)
 
-    except User.DoesNotExist:
-        return HttpResponse("No se encontró un usuario con ese correo.")
-    except User.MultipleObjectsReturned:
-        return HttpResponse("Error: hay múltiples usuarios con ese correo.")
-    
+    # GET: devolver datos del usuario
+    if request.method == 'GET':
+        try:
+            usuario = User.objects.get(id=usuario_id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Usuario no encontrado"}, status=404)
 
+        return JsonResponse({
+            "name": usuario.name,
+            "lastname": usuario.lastname,
+            "email": usuario.email,
+            "phone": getattr(usuario, 'phone', ''),         # Si tienes ese campo
+            "location": getattr(usuario, 'location', ''),   # Si tienes ese campo
+            "account_type": usuario.account_type.account_type,
+            "id": usuario.id
+        })
+
+    # PUT: actualizar datos del usuario
+    elif request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "JSON inválido"}, status=400)
+
+        try:
+            usuario = User.objects.get(id=usuario_id)
+
+            usuario.name = data.get("name", usuario.name)
+            usuario.email = data.get("email", usuario.email)
+            
+            usuario.save()
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Usuario no encontrado"}, status=404)
+
+
+        return JsonResponse({
+            "success": True,
+            "message": "Perfil actualizado",
+            "name": usuario.name,
+            "email": usuario.email,
+        })
+
+    # Otros métodos no permitidos
+    else:
+        return HttpResponseNotAllowed(['GET', 'PUT'])
+
+def usuario(request):
+    return render(request, "user.html") 
 
 
 def productos(request):
@@ -127,14 +212,8 @@ def inventario(request):
     return render(request,'inventory.html')
 
 
-def editaruser(request,usuario_id):
-    try:
-        usuario = User.objects.get(id=usuario_id)
-        return render(request, 'editprofileuser.html', {"usuario":usuario})
-    except User.DoesNotExist:
-        return HttpResponse("No se encontró un usuario con ese correo.")
-    except User.MultipleObjectsReturned:
-        return HttpResponse("Error: hay múltiples usuarios con ese correo.")
+def editaruser(request):
+    return render(request, 'editprofileuser.html')
 
 
 # ViewSet crea automaticamente endpoints para listar, crear, editar y eliminar productos
