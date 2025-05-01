@@ -108,10 +108,11 @@
             const nav = document.getElementById("navbar-links");
             const token = localStorage.getItem("token");
 
+            console.log("Token:", token); // Verifica si el token se está almacenando correctamente
             if (token) {
                 nav.innerHTML = `
                     <li class="nav-item"><a class="nav-link" href="{% url 'usuario' %}">Mi Perfil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}" id="logout-link">Cerrar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'productos' %}">Productos</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
                 `;
@@ -122,6 +123,7 @@
                 nav.innerHTML = `
                     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign up</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'productos' %}">Productos</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
                 `;

@@ -20,27 +20,25 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{%url 'inicio'%}">Tienda Online</a>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{%url 'login'%}">Log in</a></li>
-                <li class="nav-item"><a class="nav-link" href="{%url 'signup'%}">Sign up</a></li>
-                <li class="nav-item"><a class="nav-link">-</a></li>
-                <li class="nav-item"><a class="nav-link" href="{%url 'carrito'%}">Carrito</a></li>
+            <a class="navbar-brand" href="{% url 'inicio' %}">Cafetería</a>
+            <ul class="navbar-nav ms-auto" id="navbar-links">
+                <!-- Aquí se insertarán dinámicamente los enlaces -->
             </ul>
         </div>
     </nav>
+
     <section class="products-section">
         <h3>Productos Disponibles</h3>
         <div class="row g-4" id="productsList">
             {% for producto in productos %}
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card product-card">
-                            <img src="{% static 'img/default.jpg' %}" class="card-img-top" alt="Imagen por defecto">
+                        <img src="{% static 'img/default.jpg' %}" class="card-img-top" alt="Imagen por defecto">
                         <div class="card-body">
                             <h5 class="card-title">{{ producto.product_name }}</h5>
                             <p class="card-text">${{ producto.product_price }} (Stock: {{ producto.stock_product }})</p>
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-primary">Añadir al carrito</button>
+                                <button onclick="addProduct()"  class="btn btn-primary">Añadir al carrito</button>
                             </div>
                         </div>
                     </div>
@@ -69,6 +67,37 @@
             </p>
         </div>
     </footer>
+
+    <script>
+        (function() {
+            const nav = document.getElementById("navbar-links");
+            const token = localStorage.getItem("token");
+
+            if (token) {
+                nav.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="{% url 'usuario' %}">Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
+                `;
+                document.getElementById("logout-link").addEventListener("click", () => {
+                    localStorage.removeItem("token");
+                });
+            } else {
+                nav.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign up</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
+                `;
+            }
+        })();
+    </script>
+
+    <script>
+        function addProduct() {
+            console.log("Producto añadido al carrito");
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

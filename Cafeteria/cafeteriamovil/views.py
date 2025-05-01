@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import User,Account_Detail, Product
+from .models import User,Account_Detail, Product, Order,OrderDetail
 
 import jwt
 import os
+import json
+
+from datetime import datetime, timedelta, timezone
+
 
 from django.http import JsonResponse
 
@@ -20,8 +24,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ProductSerializer
 
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponseNotAllowed
+
+
 admin = "admin"
 usuario = "usuario"
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -70,6 +79,17 @@ def login(request):
       
         try:
             usuario = User.objects.get(email=email)
+
+            now = datetime.now(timezone.utc)
+            exp = now + timedelta(days=365)
+
+            payload = {
+                "ID": usuario.id,
+                "exp": exp,
+                "iat": now,
+            }
+
+            token = jwt.encode(payload, private_key, algorithm='RS256')
         except User.DoesNotExist:
             error = "Usuario no encontrado"
             return render(request, "login.html", {"error": error})
@@ -78,8 +98,7 @@ def login(request):
             error = "Contraseña incorrecta"
             return render(request, "login.html", {"error": error})
 
-      
-        return redirect("usuario", usuario.id)
+        return render(request, "token_redirect.html", {"token": token})
 
     return render(request, "login.html")
 
@@ -92,9 +111,7 @@ def signup(request):
         password = request.POST.get("password")
         account_type = request.POST.get("accountType")
 
-        print(account_type)
         account_type_instance, created = Account_Detail.objects.get_or_create(account_type=account_type)
-        print(account_type_instance)
 
         try:
             if User.objects.filter(email=email).exists():
@@ -110,8 +127,14 @@ def signup(request):
             )
             usuario.save()
 
+            now = datetime.now(timezone.utc)
+            exp = now + timedelta(days=365)
+
+
             payload = {
                 "ID": usuario.id,
+                "exp": exp,
+                "iat": now,
             }
 
             token = jwt.encode(payload, private_key, algorithm='RS256')
@@ -128,29 +151,20 @@ def signup(request):
             return HttpResponse(f"Ocurrió un error inesperado: {e}")
 
     return render(request, 'signup.html')
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse, HttpResponseNotAllowed
-import json, jwt
 
-# Asegúrate de tener public_key cargada desde tu PEM
-with open('/Users/yeremias/Desktop/programacion-web-sumativa1/Cafeteria/keys/public_key.pem') as f:
-    public_key = f.read()
 
 @csrf_exempt
 def usuario_api(request):
-    # Leer el token de cabecera
     token = request.headers.get('Authorization', '')
     if not token:
         return JsonResponse({"error": "Token no enviado"}, status=401)
 
-    # Decodificar JWT antes de cualquier operación
     try:
         decoded = jwt.decode(token, public_key, algorithms=["RS256"])
         usuario_id = decoded.get("ID")
     except Exception as e:
         return JsonResponse({"error": f"Token inválido: {str(e)}"}, status=400)
 
-    # GET: devolver datos del usuario
     if request.method == 'GET':
         try:
             usuario = User.objects.get(id=usuario_id)
@@ -161,13 +175,10 @@ def usuario_api(request):
             "name": usuario.name,
             "lastname": usuario.lastname,
             "email": usuario.email,
-            "phone": getattr(usuario, 'phone', ''),         # Si tienes ese campo
-            "location": getattr(usuario, 'location', ''),   # Si tienes ese campo
             "account_type": usuario.account_type.account_type,
             "id": usuario.id
         })
 
-    # PUT: actualizar datos del usuario
     elif request.method == 'PUT':
         try:
             data = json.loads(request.body)
@@ -193,9 +204,61 @@ def usuario_api(request):
             "email": usuario.email,
         })
 
-    # Otros métodos no permitidos
-    else:
-        return HttpResponseNotAllowed(['GET', 'PUT'])
+
+
+@csrf_exempt
+def order_api(request):
+    # Para obtenerlos desde el carrito
+    token = request.headers.get('Authorization', '')
+    if request.method == 'GET':
+
+        decoded = jwt.decode(token, public_key, algorithms=["RS256"])
+        usuario_id = decoded.get("ID")
+        usuario = User.objects.get(id=usuario_id)
+        
+        detalles = OrderDetail.objects.select_related('order', 'product') \
+        .filter(order__client=usuario)
+
+        print(detalles)
+       
+    elif request.method == 'POST':
+        try:
+            decoded = jwt.decode(token, public_key, algorithms=["RS256"])
+            usuario_id = decoded.get("ID")
+
+            data = json.loads(request.body)
+
+            producto = Product(
+                name=data['name'],
+                description=data['description'],
+                price=data['price'],
+                stock=data['stock'],
+                usuario=User.objects.get(id=usuario_id),
+            )
+            producto.save()
+
+
+            return JsonResponse({"success": True, "message": "Producto creado"}, status=201)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "JSON inválido"}, status=400)
+        except KeyError:
+            return JsonResponse({"error": "Faltan campos requeridos"}, status=400)
+    # Acciones desde el carrito
+    elif request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            producto = Product.objects.get(id=data['id'])
+            producto.name = data.get('name', producto.name)
+            producto.description = data.get('description', producto.description)
+            producto.price = data.get('price', producto.price)
+            producto.stock = data.get('stock', producto.stock)
+            producto.save()
+            return JsonResponse({"success": True, "message": "Producto actualizado"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "JSON inválido"}, status=400)
+        except Product.DoesNotExist:
+            return JsonResponse({"error": "Producto no encontrado"}, status=404)
+
 
 def usuario(request):
     return render(request, "user.html") 
