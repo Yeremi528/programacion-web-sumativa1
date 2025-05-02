@@ -10,7 +10,12 @@ from datetime import datetime, timedelta, timezone
 
 
 from django.http import JsonResponse
+from decimal import Decimal
 
+from django.shortcuts import get_object_or_404
+from django.db import transaction
+from django.db.models import Sum
+from django.contrib.auth import get_user_model
 
 from django.core.exceptions import ValidationError
 from django.db import DataError
@@ -208,56 +213,84 @@ def usuario_api(request):
 
 @csrf_exempt
 def order_api(request):
-    # Para obtenerlos desde el carrito
+
     token = request.headers.get('Authorization', '')
+    decoded = jwt.decode(token, public_key, algorithms=["RS256"])
+    usuario_id = decoded.get("ID")
+    usuario = User.objects.get(id=usuario_id)
+
+
     if request.method == 'GET':
-
-        decoded = jwt.decode(token, public_key, algorithms=["RS256"])
-        usuario_id = decoded.get("ID")
-        usuario = User.objects.get(id=usuario_id)
         
-        detalles = OrderDetail.objects.select_related('order', 'product') \
-        .filter(order__client=usuario)
+        detalles_qs = (
+            OrderDetail.objects
+            .select_related('order', 'product')
+            .filter(order__client=usuario)
+        )
 
-        print(detalles)
-       
+        # Serializo cada detalle a dict
+        detalles = []
+        for d in detalles_qs:
+            detalles.append({
+                "order_id":     d.order.id,
+                "order_date":   d.order.order_date.isoformat(),
+                "order_status": d.order.order_status,
+                "product_id":   d.product.id,
+                "product_name": d.product.product_name,
+                "quantity":     d.quantity,
+                "subtotal":     d.subtotal,
+            })
+
+        return JsonResponse({"detalles": detalles}, status=200)
     elif request.method == 'POST':
         try:
-            decoded = jwt.decode(token, public_key, algorithms=["RS256"])
-            usuario_id = decoded.get("ID")
+            payload  = json.loads(request.body)
+            prod_id  = payload['product_id']
+            cantidad = int(payload['cantidad'])
+        except (json.JSONDecodeError, KeyError, ValueError):
+            return JsonResponse({"error": "JSON inválido o campos faltantes"}, status=400)
 
-            data = json.loads(request.body)
-
-            producto = Product(
-                name=data['name'],
-                description=data['description'],
-                price=data['price'],
-                stock=data['stock'],
-                usuario=User.objects.get(id=usuario_id),
-            )
-            producto.save()
-
-
-            return JsonResponse({"success": True, "message": "Producto creado"}, status=201)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "JSON inválido"}, status=400)
-        except KeyError:
-            return JsonResponse({"error": "Faltan campos requeridos"}, status=400)
-    # Acciones desde el carrito
-    elif request.method == 'PUT':
-        try:
-            data = json.loads(request.body)
-            producto = Product.objects.get(id=data['id'])
-            producto.name = data.get('name', producto.name)
-            producto.description = data.get('description', producto.description)
-            producto.price = data.get('price', producto.price)
-            producto.stock = data.get('stock', producto.stock)
-            producto.save()
-            return JsonResponse({"success": True, "message": "Producto actualizado"}, status=200)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "JSON inválido"}, status=400)
-        except Product.DoesNotExist:
+        producto = Product.objects.filter(id=prod_id).first()
+        if not producto:
             return JsonResponse({"error": "Producto no encontrado"}, status=404)
+        if cantidad < 1 or cantidad > producto.stock_product:
+            return JsonResponse({"error": "Cantidad inválida o stock insuficiente"}, status=400)
+
+        with transaction.atomic():
+            # 1) Creamos UN PEDIDO nuevo en estado “Pendiente”
+            pedido = Order.objects.create(
+                order_date  = datetime.now(timezone.utc).date(),
+                order_total = Decimal('0.00'),           # lo recalcularemos más abajo
+                order_status= 'Pendiente',
+                client      = usuario,
+            )
+
+            # 2) Creamos un detalle NUEVO para este pedido
+            detalle = OrderDetail.objects.create(
+                order    = pedido,
+                product  = producto,
+                quantity = cantidad,
+                subtotal = producto.product_price * cantidad,
+            )
+
+            # 3) Recalculamos el total del pedido (ahora solo tiene este detalle)
+            total = pedido.detalles.aggregate(
+                total=Sum('subtotal')
+            )['total'] or Decimal('0.00')
+            pedido.order_total = total
+            pedido.save()
+
+        return JsonResponse({
+            "success":     True,
+            "order_id":    pedido.id,
+            "added": {
+                "product_id": producto.id,
+                "quantity":   detalle.quantity,
+                "subtotal":   str(detalle.subtotal),
+            },
+            "order_total": str(pedido.order_total),
+        }, status=201)
+
 
 
 def usuario(request):

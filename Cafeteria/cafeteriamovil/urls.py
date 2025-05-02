@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import inicio,usuario_api, login, signup, usuario, carrito, inventario, productos, editaruser, password_reset, ProductViewSet,recetas
+from .views import inicio,usuario_api, order_api, login, signup, usuario, carrito, inventario, productos, editaruser, password_reset,recetas, ProductViewSet
 from . import views
 
 #Router de Django REST Framework para generar rutas automáticas del CRUD
@@ -14,12 +14,13 @@ urlpatterns = [
     path('inicio/signup', signup, name="signup"),
     path('usuario/', usuario, name="usuario"),
     path('productos/', productos, name="productos"),
-    path('productos/carrito', carrito, name="carrito"),
+    path('productos/carrito/', carrito, name="carrito"),
     path('administrador/inventario', inventario, name="inventario"),
     path('usuario/editar', editaruser, name="editaruser"),
     path('password-reset/', password_reset, name='password_reset'),
     path("api/usuario/", usuario_api, name="usuario_api"),
     path('recetas/', recetas, name='recetas'),
+    path("api/order/", order_api, name="order_api"),
 
     # se agrega esta linea para exponer las rutas de la API
     path('api/', include(router.urls)),

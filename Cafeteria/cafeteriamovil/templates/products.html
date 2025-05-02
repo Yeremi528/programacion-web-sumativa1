@@ -36,44 +36,63 @@
         </div>
       </div>
 
-      <div class="row g-4" id="productsList">
+    <section class="products-section">
+        <h3>Productos Disponibles</h3>
+        <div class="row g-4" id="productsList">
         {% for producto in productos %}
-          <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card h-100 shadow-sm border-0 transition-hover">
-              <img src="{% static 'img/default.jpg' %}" class="card-img-top" alt="Imagen por defecto" style="height: 200px; object-fit: cover;">
-              <div class="card-body">
-                <h5 class="card-title">{{ producto.product_name }}</h5>
-                <div class="d-flex flex-column mb-2">
-                  <span class="fw-bold medium">${{ producto.product_price }} CLP</span>
-                  <span class="medium" data-price="{{ producto.product_price }}">Calculando...</span>
-                </div>
-                <p class="card-text">Stock: {{ producto.stock_product }}</p>
-                <div class="d-flex justify-content-end">
-                  <button class="btn btn-primary">Añadir al carrito</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card product-card mb-4">
+                <img src="{% static 'img/default.jpg' %}" class="card-img-top" alt="Imagen por defecto">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ producto.product_name }}</h5>
+                    <p class="card-text mb-3">${{ producto.product_price }} (Stock: {{ producto.stock_product }})</p>
 
+                 
+                    <div class="input-group mb-3 quantity-selector" style="max-width: 120px;">
+                    <button class="btn btn-outline-secondary decrement" type="button">−</button>
+                    <input 
+                        id="quantity_{{ producto.id }}"
+                        class="form-control text-center quantity-input" 
+                        value="1" 
+                        min="1" 
+                        max="{{ producto.stock_product }}" 
+                        aria-label="Cantidad"
+                    >
+                    <button class="btn btn-outline-secondary increment" type="button">＋</button>
+                    </div>
+
+                    <div class="mt-auto text-end">
+                    <button 
+                        onclick='addProduct("{{ producto.id }}")'
+                        class="btn btn-primary add-to-cart-btn" 
+                        data-product-id="{{ producto.id }}"
+                    >
+                        Añadir al carrito
+                    </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </section>
+
+    <div class="footer-logo-container">
+        <a href="{%url 'inicio'%}">
+            <img src="{% static 'img/logo.jpg' %}" alt="Cafe Movile Logo" class="rounded-3"
+                style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
+        </a>
     </div>
 
-  </section>
-
-  <div class="text-center mt-4 d-md-none">
-    <a href="{%url 'inicio'%}">
-      <img src="{% static 'img/logo.jpg' %}" alt="Cafe Movile Logo" class="rounded-circle shadow"
-        style="width: 100px; height: 100px; object-fit: cover;">
-    </a>
-  </div>
-
-  <footer class="bg-dark text-white py-4 mt-5">
-
-    <div class="col-12 text-center mb-3">
-      <div class="bg-dark border border-secondary rounded py-2 px-3 d-inline-block" id="currency-info">
-        <div class="spinner-border spinner-border-sm text-light" role="status">
-          <span class="visually-hidden">Cargando...</span>
+    <footer>
+        <div class="container">
+            <p><strong>Contacto:</strong> +56 9 1234 5678 | contacto@cafemovile.cl</p>
+            <p><strong>Dirección:</strong> Av. Colón 1234, Talcahuano, Concepción, Chile</p>
+            <p>
+                <a href="https://instagram.com/cafemovile" target="_blank"><i class="bi bi-instagram"></i></a>
+                <a href="https://facebook.com/cafemovile" target="_blank"><i class="bi bi-facebook"></i></a>
+                <a href="https://twitter.com/cafemovile" target="_blank"><i class="bi bi-twitter"></i></a>
+            </p>
         </div>
         <span class="ms-2 text-light">Cargando información del dólar...</span>
       </div>
@@ -94,6 +113,92 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- JS personalizado -->
   <script src="{% static 'js/products.js' %}"></script>
+    <script>
+        (function() {
+            const nav = document.getElementById("navbar-links");
+            const token = localStorage.getItem("token");
+            
+            if (token) {
+                nav.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="{% url 'usuario' %}">Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
+                `;
+                document.getElementById("logout-link").addEventListener("click", () => {
+                    localStorage.removeItem("token");
+                });
+            } else {
+                nav.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign up</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
+                `;
+            }
+        })();
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.quantity-selector').forEach(wrapper => {
+        const input = wrapper.querySelector('.quantity-input');
+        wrapper.querySelector('.decrement').addEventListener('click', () => {
+          let val = parseInt(input.value) || 1;
+          if (val > parseInt(input.min)) input.value = val - 1;
+        });
+        wrapper.querySelector('.increment').addEventListener('click', () => {
+          let val = parseInt(input.value) || 1;
+          if (val < parseInt(input.max)) input.value = val + 1;
+        });
+      });
+    
+
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.product-card');
+          const productId = btn.dataset.productId;
+          const quantity = card.querySelector('.quantity-input').value;
+    
+          addProduct(productId, quantity);
+        });
+      });
+
+
+    });
+    
+    </script>
+
+    <script>
+        function addProduct(productID) {
+            let quantity = document.getElementById(`quantity_${productID}`).value;
+            console.log("Cantidad seleccionada:", quantity);
+            console.log("ID del producto:", productID);
+            fetch("/api/order/", {
+                method: "POST",
+                headers: {
+                "Authorization": localStorage.getItem("token"),
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                product_id: productID,
+                cantidad: quantity  
+                }),
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Error al añadir al carrito");
+                return res.json();
+            })
+            .then(resp => {
+                alert("Producto añadido al carrito");
+                window.location.href = "/productos/carrito/";
+            })
+            .catch(err => {
+                alert("Error al añadir el producto al carrito");
+            });
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
