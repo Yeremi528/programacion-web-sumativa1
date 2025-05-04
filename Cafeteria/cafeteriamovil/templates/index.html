@@ -20,9 +20,19 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'inicio' %}">Cafetería</a>
-            <ul class="navbar-nav ms-auto" id="navbar-links">
-                <!-- Aquí se insertarán dinámicamente los enlaces -->
-            </ul>
+    
+            <!-- Botón hamburguesa -->
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <!-- Contenedor colapsable -->
+             
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto" id="navbar-links">
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -32,6 +42,13 @@
     </div>
 
     <img src="{% static '/img/coffe.jpeg' %}" alt="Cafetería Móvil" class="promo-image">
+    
+
+    <p class="text-black h3 m-5 p-4 w-50 text-center mx-auto rounded border shadow-sm" 
+    style="background-color: rgba(255, 255, 255, 0.9);">
+    <strong>☕ ¡Para endulzar tu café, el chiste del día!<br></strong> {{ joke }}
+    </p>
+
 
     <section class="offers-section">
         <h3>Productos en Oferta</h3>

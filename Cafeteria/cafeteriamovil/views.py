@@ -28,6 +28,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ProductSerializer
+import requests
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponseNotAllowed
@@ -72,7 +73,25 @@ def password_reset(request):
     return render(request, 'password_reset.html')
 
 def inicio(request):
-    return render(request, 'index.html')
+    views.py
+
+def inicio(request):
+  
+  url = "https://v2.jokeapi.dev/joke/Any?lang=es&blacklistFlags=nsfw,religious,political,racist,sexist,explicit"
+  joke = "No se pudo obtener un chiste."
+
+  try:
+      response = requests.get(url)
+      data = response.json()
+
+      if data["type"] == "single":
+        joke = data["joke"]
+      elif data["type"] == "twopart":
+        joke = f'{data["setup"]} ... {data["delivery"]}'
+  except:
+    ValueError
+
+  return render(request, 'index.html', {'joke': joke})
 
 def login(request):
     if request.method == 'POST':
