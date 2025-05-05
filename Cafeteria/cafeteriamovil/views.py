@@ -310,6 +310,19 @@ def order_api(request):
             "order_total": str(pedido.order_total),
         }, status=201)
 
+    elif request.method == 'DELETE':
+        user = request.user 
+        try:
+            orden = Order.objects.filter(client=usuario, order_status='Pendiente').first()
+            if orden:
+                orden.detalles.all().delete()
+                return JsonResponse({'mensaje': 'Carrito vaciado correctamente'})
+            else:
+                return JsonResponse({'error': 'No se encontró una orden activa'}, status=404)
+        except:
+                ValueError
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)   
 
 
 def usuario(request):
@@ -379,3 +392,5 @@ class RetrieveUpdateDestroyProduct(APIView):
         
         producto.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    
