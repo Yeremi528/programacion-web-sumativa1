@@ -22,7 +22,8 @@ Comando para instalar rest_framework
 pip install djangorestframework
 brew install pipx
 pipx install PyJWT
-
+pip install requests
+pip install Pillow
 
 
 Levantar ambiente python

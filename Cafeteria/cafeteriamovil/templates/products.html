@@ -38,41 +38,46 @@
     <section class="products-section">
         <h3>Productos Disponibles</h3>
         <div class="row g-4" id="productsList">
-        {% for producto in productos %}
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card product-card mb-4">
-                <img src="{% static 'img/default.jpg' %}" class="card-img-top" alt="Imagen por defecto">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ producto.product_name }}</h5>
-                    <p class="card-text mb-3">${{ producto.product_price }} (Stock: {{ producto.stock_product }})</p>
-                    <span class="medium" data-price="{{ producto.product_price }}">Calculando...</span>
-                 
-                    <div class="input-group mb-3 quantity-selector" style="max-width: 120px;">
-                    <button class="btn btn-outline-secondary decrement" type="button">−</button>
-                    <input 
-                        id="quantity_{{ producto.id }}"
-                        class="form-control text-center quantity-input" 
-                        value="1" 
-                        min="1" 
-                        max="{{ producto.stock_product }}" 
-                        aria-label="Cantidad"
-                    >
-                    <button class="btn btn-outline-secondary increment" type="button">＋</button>
-                    </div>
-
-                    <div class="mt-auto text-end">
-                    <button 
-                        onclick='addProduct("{{ producto.id }}")'
-                        class="btn btn-primary add-to-cart-btn" 
-                        data-product-id="{{ producto.id }}"
-                    >
-                        Añadir al carrito
-                    </button>
-                    </div>
-                </div>
-                </div>
-            </div>
-        {% endfor %}
+          {% for producto in productos %}
+          <div class="col-lg-4 col-md-6 col-sm-12">
+              <div class="card product-card mb-4">
+                  {% if producto.imagen_product %}
+                      <img src="{{ producto.imagen_product.url }}" class="card-img-top" alt="{{ producto.product_name }}">
+                  {% else %}
+                      <img src="{% static 'img/default.jpg' %}" class="card-img-top" alt="Imagen por defecto">
+                  {% endif %}
+      
+                  <div class="card-body d-flex flex-column">
+                      <h5 class="card-title">{{ producto.product_name }}</h5>
+                      <p class="card-text mb-3">${{ producto.product_price }} (Stock: {{ producto.stock_product }})</p>
+                      <span class="medium" data-price="{{ producto.product_price }}">Calculando...</span>
+      
+                      <div class="input-group mb-3 quantity-selector" style="max-width: 120px;">
+                          <button class="btn btn-outline-secondary decrement" type="button">−</button>
+                          <input 
+                              id="quantity_{{ producto.id }}"
+                              class="form-control text-center quantity-input" 
+                              value="1" 
+                              min="1" 
+                              max="{{ producto.stock_product }}" 
+                              aria-label="Cantidad"
+                          >
+                          <button class="btn btn-outline-secondary increment" type="button">＋</button>
+                      </div>
+      
+                      <div class="mt-auto text-end">
+                          <button 
+                              onclick='addProduct("{{ producto.id }}")'
+                              class="btn btn-primary add-to-cart-btn" 
+                              data-product-id="{{ producto.id }}"
+                          >
+                              Añadir al carrito
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      {% endfor %}
         </div>
     </section>
 

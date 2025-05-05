@@ -27,7 +27,6 @@ class Promotions(models.Model):
     description = models.TextField("Descripción")
     start_time = models.DateField("Inicio")
     end_time = models.DateField("Término")
-    promotional_image = models.BinaryField("Imagen", blank=True, null=True)
 
     def __str__(self):
         return self.promotion_title
@@ -50,7 +49,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # promotion = models.ForeignKey(Promotions, on_delete=models.CASCADE, related_name="promocion")
-    # imagen_product = models.BinaryField("Imagen", blank=True, null=True)
+    imagen_product = models.ImageField("Imagen", upload_to='productos/', blank=True, null=True)
     # product_type = models.ForeignKey(Product_Detail, on_delete=models.CASCADE, related_name="tipo_producto", default=1)
 
     def str(self):
