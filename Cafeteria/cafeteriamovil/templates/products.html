@@ -69,7 +69,6 @@
                           <button 
                               onclick='addProduct("{{ producto.id }}")'
                               class="btn btn-primary add-to-cart-btn" 
-                              data-product-id="{{ producto.id }}"
                           >
                               Añadir al carrito
                           </button>
@@ -192,7 +191,6 @@
             })
             .then(resp => {
                 alert("Producto añadido al carrito");
-                window.location.href = "/productos/carrito/";
             })
             .catch(err => {
                 alert("Error al añadir el producto al carrito");

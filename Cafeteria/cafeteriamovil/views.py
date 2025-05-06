@@ -311,16 +311,21 @@ def order_api(request):
         }, status=201)
 
     elif request.method == 'DELETE':
-        user = request.user 
         try:
-            orden = Order.objects.filter(client=usuario, order_status='Pendiente').first()
-            if orden:
-                orden.detalles.all().delete()
+            # Obtenemos todas las ordenes pendientes del usuario
+            ordenes_pendientes = Order.objects.filter(client=usuario, order_status='Pendiente')
+
+            if ordenes_pendientes.exists():
+                # Elimina todas las ordenes pendientes y sus detalles
+                # Debido a la configuración de cascada en Django, esto también eliminara
+                # todos los OrderDetail asociados
+                ordenes_pendientes.delete()
+
                 return JsonResponse({'mensaje': 'Carrito vaciado correctamente'})
             else:
                 return JsonResponse({'error': 'No se encontró una orden activa'}, status=404)
-        except:
-                ValueError
+        except Exception as e:
+            return JsonResponse({'error': f'Error al procesar la solicitud: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)   
 
