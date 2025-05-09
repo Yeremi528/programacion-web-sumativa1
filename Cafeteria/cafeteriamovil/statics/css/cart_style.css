@@ -12,17 +12,17 @@ body {
     padding: 0.5rem 1rem;
 }
 .cart-container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
+    max-width: 95%;
+    margin: 20px auto;
+    padding: 15px;
     border: 1px solid #ccc;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: rgba(255, 255, 255, 0.9);
 }
 .cart-container h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
 }
 .header-logo {
     position: fixed;
@@ -73,48 +73,19 @@ footer a {
 footer a:hover {
     color: #ffffff;
 }
-/* Media query para pantallas pequeñas */
-@media (max-width: 768px) {
-    .header-logo {
-        display: none;
-    }
-    .footer-logo-container {
-        display: block;
-    }
+
+@media (min-width: 768px) {
     .cart-container {
-        margin: 20px;
-        padding: 15px;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    .cart-table th, .cart-table td {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-    .cart-table img {
-        width: 40px;
-        height: 40px;
-    }
-}
-@media (max-width: 576px) {
-    .cart-table thead {
-        display: none; /* Oculta los encabezados en pantallas muy pequeñas */
-    }
-    .cart-table tr {
-        display: block;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #ddd;
-    }
-    .cart-table td {
-        display: block;
-        text-align: right;
-        position: relative;
-        padding-left: 50%;
-    }
-    .cart-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 45%;
-        font-weight: bold;
+
+    .cart-container h2{
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
         text-align: left;
+
     }
 }

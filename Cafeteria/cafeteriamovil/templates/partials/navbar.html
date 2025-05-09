@@ -1,0 +1,93 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'inicio' %}">Cafetería</a>
+        
+        <!-- Botón hamburguesa -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Contenedor colapsable -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto" id="navbar-links">
+                <!-- Se llenará dinámicamente con JavaScript -->
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // Función para cargar el navbar según el tipo de usuario
+    function cargarNavbar() {
+        const token = localStorage.getItem("token");
+        const navbarLinks = document.getElementById("navbar-links");
+        
+        if (!token) {
+            // Si no hay token, mostrar enlaces para usuarios no autenticados
+            navbarLinks.innerHTML = `
+                <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link"> - </a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Registrarse</a></li>
+            `;
+            return;
+        }
+
+        // Si hay token, obtener información del usuario
+        fetch("/api/usuario/", {
+            method: "GET",
+            headers: {
+                "Authorization": token
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error("Error de autenticación:", data.error);
+                localStorage.removeItem("token");
+                cargarNavbar(); // Recargar como usuario no autenticado
+                return;
+            }
+
+            // Personalizar navbar según el tipo de cuenta
+            if (data.account_type === "admin") {
+                navbarLinks.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'usuario' %}">Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/administrador/inventario/">Inventario</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'productos' %}">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/">Djando Admin</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}" id="logout-link" onclick="cerrarSesion()">Cerrar Sesión</a></li>
+                `;
+            } else {
+                navbarLinks.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'usuario' %}">Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link"> - </a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'productos' %}">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}" id="logout-link" onclick="cerrarSesion()">Cerrar Sesión</a></li>
+                `;
+            }
+
+            // Configurar evento para cerrar sesión
+            document.getElementById("logout-link").addEventListener("click", cerrarSesion);
+        })
+        .catch(error => {
+            console.error("Error al obtener datos del usuario:", error);
+        });
+    }
+
+    // Función para cerrar sesión
+    function cerrarSesion() {
+        localStorage.removeItem("token");
+        // No es necesario redirigir, ya que el enlace ya apunta a la página de inicio
+    }
+
+    // Cargar el navbar cuando el DOM esté listo
+    document.addEventListener("DOMContentLoaded", cargarNavbar);
+</script>
