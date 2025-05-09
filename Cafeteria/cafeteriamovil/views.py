@@ -33,6 +33,7 @@ import requests
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponseNotAllowed
 
+from rest_framework.authentication import SessionAuthentication
 
 admin = "admin"
 usuario = "usuario"
@@ -72,8 +73,6 @@ def password_reset(request):
 
     return render(request, 'password_reset.html')
 
-def inicio(request):
-    views.py
 
 def inicio(request):
   
@@ -347,6 +346,11 @@ def inventario(request):
 
 def editaruser(request):
     return render(request, 'editprofileuser.html')
+    
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        return  # Desactiva la verificacion CSRF    
 
 # ViewSet crea automaticamente endpoints para listar, crear, editar y eliminar productos
 class ProductViewSet(viewsets.ModelViewSet):
@@ -355,6 +359,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 # Listar y crear productos
 class ListCreateProduct(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication,)
+    permission_classes = ()
     def get(self, request):
         productos = Product.objects.all()
         serializer = ProductSerializer(productos, many=True)
@@ -366,9 +372,13 @@ class ListCreateProduct(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
 
 # Ver, editar y eliminar un producto
 class RetrieveUpdateDestroyProduct(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication,)
+    permission_classes = ()
     def get(self, request, id):
         try:
             producto = Product.objects.get(id=id)
