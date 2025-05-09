@@ -12,26 +12,7 @@
   <link rel="stylesheet" href="{% static 'css/products_style.css' %}">
 </head>
 
-<body class="bg-light">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="{% url 'inicio' %}">Cafetería</a>
-      
-      <!-- Boton hamburguesa -->
-      
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-     <!-- Contenedor colapsable -->
-      
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto" id="navbar-links">
-      
-        </ul>
-      </div>
-    </div>
-  </nav>
+{% include 'partials/navbar.html' %}
     
   <section class="py-5">
     <div class="container">
@@ -68,7 +49,8 @@
                       <div class="mt-auto text-end">
                           <button 
                               onclick='addProduct("{{ producto.id }}")'
-                              class="btn btn-primary add-to-cart-btn" 
+                              class="btn btn-primary add-to-cart-btn boton-cafe"
+                              style= "background-color: #6d4c41"
                           >
                               Añadir al carrito
                           </button>
@@ -114,31 +96,7 @@
   <!-- JS personalizado -->
   <script src="{% static 'js/products.js' %}"></script>
   
-  <script>
-        (function() {
-            const nav = document.getElementById("navbar-links");
-            const token = localStorage.getItem("token");
-            
-            if (token) {
-                nav.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="{% url 'usuario' %}">Mi Perfil</a></li>
-                    <li class="nav-item"><a class="nav-link"> - </a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
-                `;
-                document.getElementById("logout-link").addEventListener("click", () => {
-                    localStorage.removeItem("token");
-                });
-            } else {
-                nav.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign up</a></li>
-                    <li class="nav-item"><a class="nav-link"> - </a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'carrito' %}">Carrito</a></li>
-                `;
-            }
-        })();
-    </script>
-
+ 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.quantity-selector').forEach(wrapper => {
