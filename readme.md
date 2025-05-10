@@ -8,7 +8,7 @@ Ejecutar aplicación:
 2.- Holaratonconcola1.
 
 Información de la DB
-Display name: KEW7B8B0LRBHR6I3
+Display name: 
 USERNAME: ADMIN
 Password: Holaratonconcola1.
 
@@ -20,8 +20,9 @@ DEPENDENCIAS
 
 Comando para instalar rest_framework
 pip install djangorestframework
+pip install oracledb
 brew install pipx
-pipx install PyJWT
+pip install PyJWT
 pip install requests
 pip install Pillow
 

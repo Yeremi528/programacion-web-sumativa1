@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // expresiones regulares para validaciones
       const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
       const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d\s])[A-Za-z\d\S]{6,}$/;
 
       let valid = true;
       let errorMessages = [];
@@ -58,14 +58,14 @@ document.addEventListener('DOMContentLoaded', function() {
         valid = false;
       }
 
-      // Validar contraseña
+     // Validar contraseña
       if (!password) {
         document.getElementById("passwordError").textContent = "La contraseña es obligatoria.";
         errorMessages.push("La contraseña es obligatoria.");
         valid = false;
       } else if (!passwordRegex.test(password)) {
-        document.getElementById("passwordError").textContent = "Debe tener al menos 6 caracteres, una letra y un número.";
-        errorMessages.push("La contraseña debe tener al menos 6 caracteres, una letra y un número.");
+        document.getElementById("passwordError").textContent = "Debe tener al menos 6 caracteres, una letra, un número y un carácter especial.";
+        errorMessages.push("La contraseña debe tener al menos 6 caracteres, una letra, un número y un carácter especial.");
         valid = false;
       }
 
