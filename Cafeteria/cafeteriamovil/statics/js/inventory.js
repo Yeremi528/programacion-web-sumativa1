@@ -1,4 +1,4 @@
-// Función para cargar los productos desde la API
+// Funcion para cargar los productos desde la API
 async function cargarProductos() {
   const tablaProductos = document.getElementById("tablaProductos");
   tablaProductos.innerHTML = ""; // Limpiamos la tabla
@@ -153,38 +153,93 @@ async function eliminarProducto(id) {
   }
 }
   
-// Función para crear un nuevo producto con SweetAlert2
 document.getElementById("formularioProducto").onsubmit = async function (e) {
   e.preventDefault();
 
+  const nombre = document.getElementById("nombre").value.trim();
+  const descripcion = document.getElementById("descripcion").value.trim();
+  const precio = document.getElementById("precio").value.trim();
+  const stock = document.getElementById("stock").value.trim();
+
+  const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+  let valid = true;
+  let errorMessages = [];
+
+  // Validacion de nombre
+  if (!nombre) {
+    errorMessages.push("El nombre es obligatorio.");
+    valid = false;
+  } else if (!nameRegex.test(nombre)) {
+    errorMessages.push("El nombre solo puede contener letras.");
+    valid = false;
+  }
+
+  // Validacion de descripcion
+  if (!descripcion) {
+    errorMessages.push("La descripción es obligatoria.");
+    valid = false;
+  }
+
+  // Validacion de precio
+  const precioNum = parseFloat(precio);
+  if (!precio) {
+    errorMessages.push("El precio es obligatorio.");
+    valid = false;
+  } else if (isNaN(precioNum) || precioNum <= 0) {
+    errorMessages.push("El precio debe ser un número positivo.");
+    valid = false;
+  }
+
+  // Validacion de stock
+  const stockNum = parseInt(stock);
+  if (!stock) {
+    errorMessages.push("El stock es obligatorio.");
+    valid = false;
+  } else if (isNaN(stockNum) || stockNum < 0) {
+    errorMessages.push("El stock debe ser un número entero no negativo.");
+    valid = false;
+  }
+
+  // Mostrar errores si los hay
+  if (!valid) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error de validación',
+      html: errorMessages.map(msg => `• ${msg}`).join('<br>'),
+      confirmButtonColor: '#6d4c41'
+    });
+    return;
+  }
+
+  // Envia el producto si todo es valido
   const newProduct = {
-    product_name: document.getElementById("nombre").value,
-    product_desc: document.getElementById("descripcion").value,
-    product_price: document.getElementById("precio").value,
-    stock_product: document.getElementById("stock").value
+    product_name: nombre,
+    product_desc: descripcion,
+    product_price: precioNum,
+    stock_product: stockNum
   };
 
   try {
     const response = await fetch('/api/productos/', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(newProduct)
     });
 
     if (response.ok) {
-      cargarProductos();  // Recarga la lista de productos
-      document.getElementById("formularioProducto").reset();  // Limpia el formulario
+      cargarProductos();
+      document.getElementById("formularioProducto").reset();
       Swal.fire('Producto creado', 'El producto ha sido creado exitosamente.', 'success');
     } else {
       Swal.fire('Error', 'Hubo un error al crear el producto.', 'error');
     }
   } catch (error) {
     console.error("Error al crear el producto: ", error);
+    Swal.fire('Error', 'Ocurrió un error inesperado.', 'error');
   }
 };
   
 // Cargar los productos cuando se carga la página
 document.addEventListener('DOMContentLoaded', cargarProductos);
-  

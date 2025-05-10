@@ -99,9 +99,16 @@ def login(request):
         email = request.POST.get('email')
         pwd = request.POST.get('password')
 
-      
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
         try:
             usuario = User.objects.get(email=email)
+
+            if usuario.password != pwd:
+                error = "Contraseña incorrecta"
+                if is_ajax:
+                    return JsonResponse({'success': False, 'error': error})
+                return render(request, "login.html", {"error": error})
 
             now = datetime.now(timezone.utc)
             exp = now + timedelta(days=365)
@@ -113,15 +120,18 @@ def login(request):
             }
 
             token = jwt.encode(payload, private_key, algorithm='RS256')
+
+            if is_ajax:
+                # Aseguramos que el token se envia en la respuesta JSON
+                return JsonResponse({'success': True, 'token': token})
+
+            return render(request, "token_redirect.html", {"token": token})
+
         except User.DoesNotExist:
             error = "Usuario no encontrado"
+            if is_ajax:
+                return JsonResponse({'success': False, 'error': error})
             return render(request, "login.html", {"error": error})
-
-        if usuario.password != pwd:
-            error = "Contraseña incorrecta"
-            return render(request, "login.html", {"error": error})
-
-        return render(request, "token_redirect.html", {"token": token})
 
     return render(request, "login.html")
 

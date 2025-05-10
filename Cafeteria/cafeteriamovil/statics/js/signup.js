@@ -1,77 +1,98 @@
-document.getElementById("form").addEventListener("submit", function(event) {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('form');
+  
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
 
-    // Limpiar errores
-    document.getElementById("nameError").textContent = "";
-    document.getElementById("apellidoError").textContent = "";
-    document.getElementById("emailError").textContent = "";
-    document.getElementById("passwordError").textContent = "";
-    document.getElementById("accountTypeError").textContent = "";
+      // Limpia mensajes de error previos
+      document.getElementById("nameError").textContent = "";
+      document.getElementById("apellidoError") ? document.getElementById("apellidoError").textContent = "" : null;
+      document.getElementById("emailError").textContent = "";
+      document.getElementById("passwordError").textContent = "";
 
-    // Obtener datos
-    const name = document.getElementById("name").value.trim();
-    const apellido = document.getElementById("apellido").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const accountType = document.getElementById("accountType").value;
+      // Obtenemos los datos del formulario
+      const name = document.getElementById("name").value.trim();
+      const lastname = document.getElementById("lastname").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-    // Formatos aceptados 
-    const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
-    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      // expresiones regulares para validaciones
+      const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+      const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
 
-    let valid = true;
+      let valid = true;
+      let errorMessages = [];
 
-    // Verificación nombre
-    if (!name) {
+      // Validar nombre
+      if (!name) {
         document.getElementById("nameError").textContent = "El nombre es obligatorio.";
+        errorMessages.push("El nombre es obligatorio.");
         valid = false;
-    } else if (!nameRegex.test(name)) {
+      } else if (!nameRegex.test(name)) {
         document.getElementById("nameError").textContent = "El nombre solo puede contener letras.";
+        errorMessages.push("El nombre solo puede contener letras.");
         valid = false;
-    }
+      }
 
-    // Verificación apellido
-    if (!apellido) {
+      // Validar apellido
+      if (!lastname) {
         document.getElementById("apellidoError").textContent = "El apellido es obligatorio.";
+        errorMessages.push("El apellido es obligatorio.");
         valid = false;
-    } else if (!nameRegex.test(apellido)) {
+      } else if (!nameRegex.test(lastname)) {
         document.getElementById("apellidoError").textContent = "El apellido solo puede contener letras.";
+        errorMessages.push("El apellido solo puede contener letras.");
         valid = false;
-    }
+      }
 
-    // Verificación email
-    if (!email) {
+      // Validar email
+      if (!email) {
         document.getElementById("emailError").textContent = "El correo es obligatorio.";
+        errorMessages.push("El correo es obligatorio.");
         valid = false;
-    } else if (!emailRegex.test(email)) {
+      } else if (!emailRegex.test(email)) {
         document.getElementById("emailError").textContent = "Ingrese un correo válido.";
+        errorMessages.push("Ingrese un correo válido.");
         valid = false;
-    }
+      }
 
-    // Verificación contraseña
-    if (!password) {
+      // Validar contraseña
+      if (!password) {
         document.getElementById("passwordError").textContent = "La contraseña es obligatoria.";
+        errorMessages.push("La contraseña es obligatoria.");
         valid = false;
-    } else if (!passwordRegex.test(password)) {
+      } else if (!passwordRegex.test(password)) {
         document.getElementById("passwordError").textContent = "Debe tener al menos 6 caracteres, una letra y un número.";
+        errorMessages.push("La contraseña debe tener al menos 6 caracteres, una letra y un número.");
         valid = false;
-    }
+      }
 
-    // Verificación tipo de cuenta
-    if (!accountType) {
-        document.getElementById("accountTypeError").textContent = "Seleccione el tipo de cuenta.";
-        valid = false;
-    }
+      // Si hay errores, se muestra con SweetAlert
+      if (!valid) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de validación',
+          html: errorMessages.map(msg => `• ${msg}`).join('<br>'),
+          confirmButtonColor: '#6d4c41'
+        });
+        return;
+      }
 
-    // Si todo es válido
-    if (valid) {
-        alert ("Se ah creado tu cuenta con exito");
-
-        if (accountType === "Administrador") {
-            window.location.href = urlAdministrador;
-        } else {
-            window.location.href = urlusuario;
-        }
-    }
+      // Si todo esta correcto, envia el formulario
+      Swal.fire({
+        icon: 'success',
+        title: '¡Registro exitoso!',
+        text: 'Tu cuenta ha sido creada correctamente.',
+        confirmButtonColor: '#6d4c41',
+        timer: 2000,
+        timerProgressBar: true
+      }).then(() => {
+        form.submit();
+      });
+    });
+  } else {
+    console.error('No se encontró el formulario en el documento');
+  }
 });
