@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'Cafeteria.wsgi.application'
 DATABASES = {
     'default':{
         'ENGINE':'django.db.backends.oracle',
-        'NAME':'(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-santiago-1.oraclecloud.com))(connect_data=(service_name=gcffc0e87e42ffe_kew7b8b0lrbhr6i3_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))',
+        'NAME':'(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.sa-santiago-1.oraclecloud.com))(connect_data=(service_name=gcffc0e87e42ffe_e2xzq2x2dm4tnk2p_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))',
         'USER': 'ADMIN',
         'PASSWORD':'Holaratonconcola1.',
         'OPTIONS':{
