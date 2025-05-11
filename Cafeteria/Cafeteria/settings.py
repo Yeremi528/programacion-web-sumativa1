@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-_hz(ov7q&xvr4h@41g=1b(ncp3td2@l4sjd9y*!c&pupa*+b+e
 DEBUG = True
 
 ALLOWED_HOSTS = ['cafeteria-e8e0.onrender.com']
-
+CSRF_TRUSTED_ORIGINS = ['https://cafeteria-e8e0.onrender.com',]
 
 # Application definition
 
