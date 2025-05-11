@@ -1,0 +1,5 @@
+djangorestframework
+oracledb
+PyJWT
+requests
+Pillow
