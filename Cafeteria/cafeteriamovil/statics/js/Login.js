@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
         errorMessages.push("La contraseña es obligatoria.");
         valid = false;
       } else if (!passwordRegex.test(password)) {
-        document.getElementById("passwordError").textContent = "La contraseña debe tener al menos 6 caracteres, una letra y un número.";
-        errorMessages.push("La contraseña debe tener al menos 6 caracteres, una letra y un número.");
+        document.getElementById("passwordError").textContent = "Debe tener al menos 6 caracteres, una letra, un número y un carácter especial..";
+        errorMessages.push("La contraseña debe tener al menos 6 caracteres, una letra, un número y un carácter especial.");
         valid = false;
       }
 
