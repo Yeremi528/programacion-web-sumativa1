@@ -8,7 +8,7 @@ Ejecutar aplicación:
 2.- Holaratonconcola1.
 
 Información de la DB
-Display name: 
+Display name: e2xzq2x2dm4tnk2p
 USERNAME: ADMIN
 Password: Holaratonconcola1.
 
