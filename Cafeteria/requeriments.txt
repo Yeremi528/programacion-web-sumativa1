@@ -1,5 +1,5 @@
-djangorestframework
-oracledb
-PyJWT
-requests
-Pillow
+pip install djangorestframework
+pip install oracledb
+pip install PyJWT
+pip install requests
+pip install Pillow
