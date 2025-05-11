@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Definir expresiones regulares para validación
       const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d\s])[A-Za-z\d\S]{6,}$/;
+
 
       let valid = true;
       let errorMessages = [];
